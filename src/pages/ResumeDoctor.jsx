@@ -4,7 +4,7 @@ import { fetchDeepSeekChat, RESUME_DOCTOR_SYSTEM_PROMPT, RESUME_FULL_DIAGNOSIS_P
 import { extractTextFromPdf } from '../utils/pdfParser';
 
 const ResumeDoctor = () => {
-  const [activeTab, setActiveTab] = useState('snippet'); // 'snippet' or 'fullPdf'
+  const [activeTab, setActiveTab] = useState('fullPdf'); // 'fullPdf' or 'snippet'
   
   // Snippet State
   const [inputResume, setInputResume] = useState('');
@@ -100,6 +100,9 @@ const ResumeDoctor = () => {
         throw new Error('未能在 PDF 中提取到足够的文本内容，可能是纯图片扫描版简历，请更换为文本型 PDF。');
       }
 
+      // Save to localStorage for JobAssessor context
+      localStorage.setItem('career_companion_resume_context', extractedText);
+
       // 2. Call API
       const messages = [
         { role: 'system', content: RESUME_FULL_DIAGNOSIS_PROMPT },
@@ -124,13 +127,12 @@ const ResumeDoctor = () => {
   // Helper to get color based on status
   const getStatusColor = (status) => {
     switch(status) {
-      case 'good': return 'var(--success-DEFAULT, #10b981)';
-      case 'warning': return 'var(--warning-DEFAULT, #f59e0b)';
-      case 'error': return 'var(--error-DEFAULT, #ef4444)';
+      case 'good': return 'var(--success)';
+      case 'warning': return 'var(--warning)';
+      case 'error': return 'var(--error)';
       default: return 'var(--text-secondary)';
     }
   };
-
 
   return (
     <div className="flex-col animate-fade-in h-screen-overflow">
@@ -138,44 +140,44 @@ const ResumeDoctor = () => {
         <h1 className="flex-row gap-4 mb-2 text-3xl font-bold tracking-tight">
           <span className="text-gradient">简历问诊室</span>
         </h1>
-        <p className="text-secondary text-lg">全方位 X 光扫描，打破简历投递石沉大海的魔咒。</p>
+        <p className="text-secondary text-lg font-medium">全方位 X 光扫描，打破简历投递石沉大海的魔咒。</p>
       </header>
 
       {/* Tabs */}
-      <div className="flex-row gap-2 mb-6 border-b border-white/5 pb-2">
-         <button 
-           onClick={() => setActiveTab('snippet')}
-           className={`px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'snippet' ? 'bg-primary/10 text-primary' : 'text-secondary hover:bg-white/5 hover:text-primary-light'}`}
-         >
-            <div className="flex-row items-center gap-2"><Activity size={18}/> 单段经历毒舌去水</div>
-         </button>
+      <div className="flex-row gap-3 mb-6 border-b border-slate-200 pb-4">
          <button 
            onClick={() => setActiveTab('fullPdf')}
-           className={`px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'fullPdf' ? 'bg-accent/10 text-accent' : 'text-secondary hover:bg-white/5 hover:text-accent-light'}`}
+           className={`px-6 py-2.5 rounded-xl transition-all font-bold text-sm tracking-wide ${activeTab === 'fullPdf' ? 'bg-white text-accent border border-accent/20 shadow-sm' : 'bg-transparent text-secondary border border-transparent hover:bg-white hover:text-primary hover:border-slate-200'}`}
          >
-            <div className="flex-row items-center gap-2"><Target size={18}/> 完整 PDF 简历诊断</div>
+            <div className="flex-row items-center gap-2"><Target size={18}/> 🎯 完整 PDF 挂载诊断</div>
+         </button>
+         <button 
+           onClick={() => setActiveTab('snippet')}
+           className={`px-6 py-2.5 rounded-xl transition-all font-bold text-sm tracking-wide ${activeTab === 'snippet' ? 'bg-white text-cyan-600 border border-cyan-200 shadow-sm' : 'bg-transparent text-secondary border border-transparent hover:bg-white hover:text-primary hover:border-slate-200'}`}
+         >
+            <div className="flex-row items-center gap-2"><Activity size={18}/> ✂️ 单段经历去水</div>
          </button>
       </div>
 
       <div className="flex-row flex-col-mobile gap-6" style={{ flex: 1, minHeight: 0 }}>
         
         {/* Left Panel */}
-        <div className="glass-panel flex-col w-full-mobile h-full" style={{ flex: '1', padding: '2rem', display: 'flex', minWidth: '320px', overflowY: 'auto' }}>
+        <div className="glass-panel flex-col w-full-mobile h-full shadow-sm" style={{ flex: '1', padding: '2rem', display: 'flex', minWidth: '320px', overflowY: 'auto', backgroundColor: 'rgba(255,255,255,0.6)' }}>
             
             {activeTab === 'snippet' ? (
                 // --- Snippet UI Left ---
                 <>
-                <h3 className="mb-4 flex-row gap-2 items-center text-primary text-xl">
+                <h3 className="mb-4 flex-row gap-2 items-center text-primary text-xl font-bold">
                     <FileText size={22} color="var(--accent-primary)" /> 你的原始经历
                 </h3>
                 <textarea
                     className="input-glass"
                     style={{ flex: 1, resize: 'none', marginBottom: '1.5rem', fontSize: '1rem', minHeight: '300px' }}
-                    placeholder="例如：主导制定产品规划并推动落地，有效支撑市场拓展目标。统筹研发设计多部门... (粘贴废话即可)"
+                    placeholder="例如：主导制定业务规划并推动落地，有效支撑业绩增长目标。统筹前后台多部门... (粘贴废话即可)"
                     value={inputResume}
                     onChange={e => setInputResume(e.target.value)}
                 ></textarea>
-                <button className="btn-primary w-full justify-center p-4 text-lg" onClick={handleDiagnoseSnippet} disabled={analyzingSnippet}>
+                <button className="btn-primary w-full justify-center p-4 text-lg shadow-sm" onClick={handleDiagnoseSnippet} disabled={analyzingSnippet}>
                     {analyzingSnippet ? (
                     <span className="flex-row gap-2 items-center"><Sparkles className="animate-spin" size={22} /> AI 正在极速脱水...</span>
                     ) : (
@@ -184,7 +186,7 @@ const ResumeDoctor = () => {
                 </button>
 
                 {snippetErrorMsg && (
-                    <div className="mt-4 p-3 bg-error/10 text-error rounded-md text-sm">
+                    <div className="mt-4 p-3 bg-red-50 text-error rounded-md text-sm border border-red-100">
                     {snippetErrorMsg}
                     </div>
                 )}
@@ -192,21 +194,28 @@ const ResumeDoctor = () => {
             ) : (
                 // --- Full PDF UI Left ---
                 <>
-                <h3 className="mb-4 flex-row gap-2 items-center text-accent text-xl">
-                 <FileIcon size={22} color="var(--accent-secondary)"/> 上传简历 PDF
+                <h3 className="mb-4 flex-row gap-2 items-center text-accent text-xl font-bold">
+                 <FileIcon size={22} className="text-accent" /> 上传简历 PDF
                 </h3>
                 
                 <div 
-                  className={`flex-col items-center justify-center p-8 border-2 border-dashed rounded-xl transition-all mb-4 mt-2 ${isDragging ? 'border-accent bg-accent/5' : 'border-white/10 hover:border-white/20'}`}
-                  style={{ minHeight: '300px' }}
+                  className={`flex-col items-center justify-center p-12 border-2 border-dashed rounded-2xl transition-all mb-6 mt-4 relative overflow-hidden group hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)] ${isDragging ? 'border-accent bg-purple-50' : 'border-slate-300 hover:border-accent bg-white'}`}
+                  style={{ minHeight: '340px' }}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                 >
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     {!pdfFile ? (
                         <>
-                         <Upload size={48} className="text-white/20 mb-4" />
-                         <p className="text-secondary text-center mb-6">点击或拖拽 PDF 文件到此处上传<br/><span className="text-xs text-white/30 mt-2 block">支持最大 10MB 解析提取</span></p>
+                         <div className="w-20 h-20 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                             <Upload size={36} className="text-slate-400 group-hover:text-accent transition-colors" />
+                         </div>
+                         <h4 className="text-xl font-bold text-primary mb-2">上载全局能力底座</h4>
+                         <p className="text-secondary text-center mb-8 max-w-[280px] leading-relaxed">
+                             拖拽您的个人 PDF 简历至此虚线框内<br/>
+                             <span className="text-xs text-slate-400 mt-1 block font-medium">支持智能提取 & 极速解构 (最大 10MB)</span>
+                         </p>
                          <input 
                            type="file" 
                            accept="application/pdf"
@@ -215,7 +224,7 @@ const ResumeDoctor = () => {
                            onChange={handleFileChange}
                          />
                          <button 
-                           className="px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-primary-light transition-colors"
+                           className="px-6 py-2.5 bg-white border border-slate-200 hover:border-slate-300 shadow-sm rounded-lg text-primary font-bold transition-all hover:bg-slate-50"
                            onClick={() => fileInputRef.current?.click()}
                          >
                            选择文件
@@ -223,14 +232,14 @@ const ResumeDoctor = () => {
                         </>
                     ) : (
                         <div className="flex-col items-center w-full">
-                           <div className="w-16 h-20 bg-accent/10 rounded border border-accent/20 flex items-center justify-center mb-4 relative">
+                           <div className="w-16 h-20 bg-white shadow-sm rounded border border-slate-200 flex items-center justify-center mb-4 relative">
                                <FileText size={32} className="text-accent" />
-                               <div className="absolute -bottom-1 -right-1 bg-success rounded-full p-1 border border-black"><CheckCircle size={10} className="text-black"/></div>
+                               <div className="absolute -bottom-2 -right-2 bg-emerald-100 rounded-full p-1 border border-white shadow-sm"><CheckCircle size={14} className="text-success"/></div>
                            </div>
-                           <p className="text-primary font-medium truncate w-full text-center px-4" title={pdfFile.name}>{pdfFile.name}</p>
-                           <p className="text-secondary text-sm mt-1">{(pdfFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                           <p className="text-primary font-bold truncate w-full text-center px-4" title={pdfFile.name}>{pdfFile.name}</p>
+                           <p className="text-secondary text-sm mt-1 font-medium">{(pdfFile.size / 1024 / 1024).toFixed(2)} MB</p>
                            
-                           <button onClick={removeFile} className="mt-6 flex-row items-center gap-2 text-error/80 hover:text-error text-sm px-4 py-2 rounded-lg hover:bg-error/10 transition-colors">
+                           <button onClick={removeFile} className="mt-8 flex-row items-center gap-2 text-error/80 hover:text-error hover:bg-red-50 text-sm px-4 py-2 rounded-lg transition-colors font-bold">
                                <Trash2 size={16} /> 移除重传
                            </button>
                         </div>
@@ -239,7 +248,7 @@ const ResumeDoctor = () => {
 
                 <div className="mt-auto">
                     <button 
-                        className="w-full flex justify-center items-center py-4 rounded-xl font-bold bg-gradient-to-r from-indigo-500 hover:from-indigo-600 to-purple-600 hover:to-purple-700 text-white shadow-lg shadow-purple-900/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none" 
+                        className="w-full flex justify-center items-center py-4 rounded-xl font-bold bg-gradient-to-r from-accent to-purple-600 border border-transparent text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none" 
                         onClick={handleDiagnosePdf} 
                         disabled={analyzingPdf || !pdfFile}
                     >
@@ -252,14 +261,14 @@ const ResumeDoctor = () => {
                 </div>
 
                 {pdfErrorMsg && (
-                    <div className="mt-4 p-3 bg-error/10 text-error rounded-md text-sm border border-error/20">
+                    <div className="mt-4 p-3 bg-red-50 text-error rounded-md text-sm border border-red-100 font-medium">
                     <AlertTriangle size={16} className="inline mr-2 -mt-0.5"/> {pdfErrorMsg}
                     </div>
                 )}
                 
                 {activeTab === 'fullPdf' && (
-                    <div className="mt-6 p-4 bg-black/20 rounded-lg text-sm text-secondary leading-relaxed border border-white/5">
-                        <strong className="text-primary-light block mb-2">💡 诊断须知：</strong>
+                    <div className="mt-6 p-4 bg-slate-50 rounded-xl text-sm text-secondary leading-relaxed border border-slate-200">
+                        <strong className="text-primary block mb-2 font-bold">💡 诊断须知：</strong>
                         1. 仅支持<strong>文本型 PDF</strong>，基于图片扫描的 PDF 暂无法解析提取文字。<br/>
                         2. 解析全程在本地浏览器内存中提取文本，而后加密传输至 AI，我们<strong>绝不留存</strong>您的简历文件本身。
                     </div>
@@ -270,11 +279,11 @@ const ResumeDoctor = () => {
         </div>
 
         {/* Right Panel */}
-        <div className="glass-panel flex-col w-full-mobile h-full" style={{ flex: '1.2', padding: '0', display: 'flex', overflowY: 'auto', minWidth: '320px' }}>
+        <div className="glass-panel flex-col w-full-mobile h-full shadow-sm" style={{ flex: '1.2', padding: '0', display: 'flex', overflowY: 'auto', minWidth: '320px', backgroundColor: 'rgba(255,255,255,0.7)' }}>
           
-          <div className="p-8 pb-4 sticky top-0 bg-black/40 backdrop-blur-md z-10 border-b border-white/5">
-            <h3 className="flex-row gap-2 items-center text-xl text-primary font-semibold">
-                <CheckCircle size={22} color="var(--accent-secondary)" /> 
+          <div className="p-8 pb-4 sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-200">
+            <h3 className="flex-row gap-2 items-center text-xl text-primary font-bold">
+                <CheckCircle size={22} className="text-accent" /> 
                 {activeTab === 'snippet' ? '专家级经历拷问' : '全局体检报告'}
             </h3>
           </div>
@@ -284,54 +293,53 @@ const ResumeDoctor = () => {
             {activeTab === 'snippet' && (
               <>
               {!snippetResult && !analyzingSnippet && (
-                <div className="flex-col flex-grow items-center justify-center animate-pulse-slow h-full opacity-40">
-                  <AlertTriangle size={56} className="mb-4 text-gradient-cyan" />
-                  <p className="text-lg text-secondary text-center">等待接诊中...在左侧输入你的经历以获取残酷真相。</p>
+                <div className="flex-col flex-grow items-center justify-center animate-pulse-slow h-full opacity-60">
+                  <AlertTriangle size={56} className="mb-4 text-cyan-400" />
+                  <p className="text-lg text-secondary text-center font-medium">等待接诊中...在左侧输入你的经历以获取残酷真相。</p>
                 </div>
               )}
 
               {analyzingSnippet && (
                 <div className="flex-col flex-grow items-center justify-center h-full">
-                  <Sparkles size={48} color="var(--accent-primary)" className="animate-pulse-slow mb-4" />
-                  <p className="text-secondary text-lg">总监正在逐字审阅您的经历...</p>
+                  <Sparkles size={48} className="text-accent animate-pulse-slow mb-4" />
+                  <p className="text-secondary text-lg font-bold">总监正在逐字审阅您的经历...</p>
                 </div>
               )}
 
               {snippetResult && (
                 <div className="flex-col gap-8 animate-fade-in-up pb-8">
-                  {/* ... Original Snippet Result UI ... */}
-                  <div className="bg-error/5 border-l-4 border-error p-6 rounded-r-xl">
-                    <h4 className="text-error font-medium mb-3 text-lg">🩺 诊断开炮</h4>
-                    <p className="text-red-300/90 leading-relaxed">
+                  <div className="bg-red-50 border-l-4 border-error p-6 rounded-r-xl">
+                    <h4 className="text-error font-bold mb-3 text-lg">🩺 诊断开炮</h4>
+                    <p className="text-error/90 leading-relaxed font-medium">
                       “{snippetResult.critique}”
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="mb-4 text-primary font-medium text-lg">❓ 灵魂核心拷问<span className="text-sm text-secondary font-normal ml-3">(回答不上来基本就凉了)</span></h4>
+                    <h4 className="mb-4 text-primary font-bold text-lg">❓ 灵魂核心拷问<span className="text-sm text-secondary font-medium ml-3">(回答不上来基本就凉了)</span></h4>
                     <div className="flex-col gap-3">
                       {snippetResult.questions && snippetResult.questions.map((q, idx) => (
-                        <div key={idx} className="input-glass bg-white/[0.02] text-[0.95rem] py-3.5 px-4 flex items-start gap-3">
-                          <strong className="text-accent-primary shrink-0 mt-0.5">Q{idx + 1}:</strong> <span className="text-primary-light/90 leading-relaxed">{q}</span>
+                        <div key={idx} className="bg-white border border-slate-200 rounded-xl text-[0.95rem] py-4 px-5 flex items-start gap-3 shadow-sm">
+                          <strong className="text-accent shrink-0 mt-0.5 font-black">Q{idx + 1}:</strong> <span className="text-primary/90 leading-relaxed font-medium">{q}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="mb-4 text-gradient text-xl font-bold">✨ 满分重构示范 <span className="text-sm font-normal text-secondary ml-2">(请结合实际填空数据)</span></h4>
-                    <div className="bg-indigo-500/5 p-7 rounded-xl border border-indigo-500/20 shadow-[inset_0_0_20px_rgba(99,102,241,0.05)]">
+                    <h4 className="mb-4 text-gradient text-xl font-bold">✨ 满分重构示范 <span className="text-sm font-medium text-secondary ml-2">(请结合实际填空数据)</span></h4>
+                    <div className="bg-white p-7 rounded-xl border border-slate-200 shadow-sm">
                       <p className="text-[0.95rem] mb-5">
                         <span className="badge badge-warning mb-2.5 inline-block">背景挑战</span>
-                        <br /><span className="text-primary/90 leading-relaxed block bg-black/20 p-3 rounded-lg border border-white/5">{snippetResult.improved_bg}</span>
+                        <br /><span className="text-primary/90 leading-relaxed block bg-slate-50 p-4 rounded-lg border border-slate-100 font-medium">{snippetResult.improved_bg}</span>
                       </p>
                       <p className="text-[0.95rem] mb-5">
                         <span className="badge badge-success mb-2.5 inline-block">行动方案</span>
-                        <br /><span className="text-primary/90 leading-relaxed block bg-black/20 p-3 rounded-lg border border-white/5">{snippetResult.improved_action}</span>
+                        <br /><span className="text-primary/90 leading-relaxed block bg-slate-50 p-4 rounded-lg border border-slate-100 font-medium">{snippetResult.improved_action}</span>
                       </p>
                       <p className="text-[0.95rem]">
-                        <span className="badge mb-2.5 inline-block bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">核心业绩</span>
-                        <br /><span className="text-primary/90 leading-relaxed block bg-black/20 p-3 rounded-lg border border-cyan-900/30">{snippetResult.improved_result}</span>
+                        <span className="badge mb-2.5 inline-block bg-cyan-50 text-cyan-600 border border-cyan-100">核心业绩</span>
+                        <br /><span className="text-primary/90 leading-relaxed block bg-slate-50 p-4 rounded-lg border border-slate-100 font-medium">{snippetResult.improved_result}</span>
                       </p>
                     </div>
                   </div>
@@ -344,20 +352,20 @@ const ResumeDoctor = () => {
             {activeTab === 'fullPdf' && (
               <>
               {!pdfResult && !analyzingPdf && (
-                <div className="flex-col flex-grow items-center justify-center animate-pulse-slow h-full opacity-40">
-                  <Target size={56} className="mb-4 text-accent" />
-                  <p className="text-lg text-secondary text-center">系统冷启动中...请在左侧上传 PDF 简历文件。</p>
+                <div className="flex-col flex-grow items-center justify-center animate-pulse-slow h-full opacity-50">
+                  <Target size={56} className="mb-4 text-slate-300" />
+                  <p className="text-lg text-secondary text-center font-bold">系统冷启动中...请在左侧上传 PDF 简历文件。</p>
                 </div>
               )}
 
               {analyzingPdf && (
                 <div className="flex-col flex-grow items-center justify-center h-full">
                   <div className="relative">
-                      <FileIcon size={64} className="text-white/10" />
+                      <FileIcon size={64} className="text-slate-200" />
                       <Zap size={32} className="text-accent absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-bounce" />
                   </div>
-                  <h3 className="text-xl font-bold text-gradient mt-6 mb-2">简历深度解析中...</h3>
-                  <p className="text-secondary text-center max-w-sm">HR 专家模型正在为您评估结构、提炼关键字，并挑出致命错误。预计耗时 10~15 秒。</p>
+                  <h3 className="text-xl font-black text-primary mt-6 mb-2">简历深度解析中...</h3>
+                  <p className="text-secondary text-center max-w-sm font-medium">HR 专家模型正在为您评估结构、提炼关键字，并挑出致命错误。预计耗时 10~15 秒。</p>
                 </div>
               )}
 
@@ -365,19 +373,19 @@ const ResumeDoctor = () => {
                 <div className="flex-col gap-8 animate-fade-in-up pb-8">
                   {/* Score Board */}
                   <div className="flex flex-col md:flex-row gap-6">
-                    <div className="bg-gradient-to-br from-black/40 to-black/80 border border-white/10 rounded-2xl p-6 flex-col items-center justify-center shrink-0 min-w-[160px] relative overflow-hidden">
+                    <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 flex-col items-center justify-center shrink-0 min-w-[160px] relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent to-primary"></div>
-                        <span className="text-secondary font-medium tracking-wide mb-2 uppercase text-xs">整体竞争力得分</span>
-                        <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 mb-1">
+                        <span className="text-secondary font-bold tracking-wide mb-2 uppercase text-xs">整体竞争力得分</span>
+                        <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-slate-800 to-slate-500 mb-1">
                             {pdfResult.overall_score}
                         </div>
-                        <span className="text-xs text-white/40">/ 100 分</span>
+                        <span className="text-xs text-slate-400 font-bold">/ 100 分</span>
                     </div>
                     
-                    <div className="flex-1 bg-black/30 border border-white/5 rounded-2xl p-5 flex flex-col justify-center gap-3">
+                    <div className="flex-1 bg-white border border-slate-200 shadow-sm rounded-2xl p-5 flex flex-col justify-center gap-3">
                         {/* Summary */}
-                        <p className="text-primary-light/90 leading-relaxed text-[0.95rem]">
-                            <strong className="text-accent-light">HR 专家辣评：</strong>
+                        <p className="text-primary/90 leading-relaxed text-[0.95rem] font-medium">
+                            <strong className="text-accent">HR 专家辣评：</strong>
                             {pdfResult.summary}
                         </p>
                     </div>
@@ -389,15 +397,15 @@ const ResumeDoctor = () => {
                           const titles = { structure: '排版结构', content: '内容密度', keywords: '核心词穿透', quantification: '数据量化' };
                           const icons = { structure: '📐', content: '🥩', keywords: '🔑', quantification: '📊' };
                           return (
-                              <div key={key} className="bg-white/[0.03] border border-white/5 p-4 rounded-xl flex-col">
+                              <div key={key} className="bg-white border border-slate-200 shadow-sm p-4 rounded-xl flex-col">
                                   <div className="flex justify-between items-center mb-2">
-                                      <span className="font-medium text-primary-light flex items-center gap-2">{icons[key]} {titles[key]}</span>
-                                      <span className={`font-bold ${data.score < 60 ? 'text-error' : data.score < 80 ? 'text-warning' : 'text-success'}`}>{data.score}</span>
+                                      <span className="font-bold text-primary flex items-center gap-2">{icons[key]} {titles[key]}</span>
+                                      <span className={`font-black ${data.score < 60 ? 'text-error' : data.score < 80 ? 'text-warning' : 'text-success'}`}>{data.score}</span>
                                   </div>
-                                  <div className="w-full bg-black/40 rounded-full h-1.5 mb-3">
+                                  <div className="w-full bg-slate-100 rounded-full h-1.5 mb-3">
                                       <div className={`h-1.5 rounded-full ${data.score < 60 ? 'bg-error' : data.score < 80 ? 'bg-warning' : 'bg-success'}`} style={{ width: `${data.score}%` }}></div>
                                   </div>
-                                  <p className="text-xs text-secondary leading-snug">{data.comment}</p>
+                                  <p className="text-xs text-secondary font-medium leading-snug">{data.comment}</p>
                               </div>
                           )
                       })}
@@ -405,14 +413,14 @@ const ResumeDoctor = () => {
 
                   {/* Top Improvements */}
                   <div>
-                      <h4 className="font-bold text-lg text-primary mb-4 flex items-center gap-2">
+                      <h4 className="font-black text-lg text-primary mb-4 flex items-center gap-2">
                           <AlertTriangle className="text-warning" size={20} /> 急需抢救的重点 (Top 3)
                       </h4>
-                      <div className="bg-warning/5 border border-warning/20 rounded-xl p-1">
+                      <div className="bg-orange-50 border border-orange-200 rounded-xl p-1 shadow-sm">
                           {pdfResult.top_improvements && pdfResult.top_improvements.map((imp, idx) => (
-                              <div key={idx} className="flex gap-3 p-3 border-b border-warning/10 last:border-0 hover:bg-warning/10 transition-colors rounded-lg">
-                                  <span className="text-warning font-black shrink-0 w-6 h-6 flex items-center justify-center bg-warning/10 rounded-full text-xs">{idx + 1}</span>
-                                  <span className="text-primary-light/90 text-[0.95rem] pt-0.5">{imp}</span>
+                              <div key={idx} className="flex gap-3 p-3 border-b border-orange-100 last:border-0 hover:bg-orange-100/50 transition-colors rounded-lg">
+                                  <span className="text-warning font-black shrink-0 w-6 h-6 flex items-center justify-center bg-orange-100 rounded-full text-xs">{idx + 1}</span>
+                                  <span className="text-primary/90 text-[0.95rem] pt-0.5 font-medium">{imp}</span>
                               </div>
                           ))}
                       </div>
@@ -420,29 +428,29 @@ const ResumeDoctor = () => {
 
                   {/* Detailed Sections */}
                   <div>
-                    <h4 className="font-bold text-lg text-primary mb-4 border-b border-white/10 pb-2">模块拆解显微镜</h4>
+                    <h4 className="font-black text-lg text-primary mb-4 border-b border-slate-200 pb-2">模块拆解显微镜</h4>
                     <div className="flex-col gap-4">
                         {pdfResult.sections && pdfResult.sections.map((sec, idx) => (
-                            <div key={idx} className="bg-black/30 border border-white/10 rounded-xl p-5 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: getStatusColor(sec.status) }}></div>
+                            <div key={idx} className="bg-white border border-slate-200 shadow-sm rounded-xl p-5 relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: getStatusColor(sec.status) }}></div>
                                 
                                 <div className="flex justify-between items-start mb-3 pl-2">
-                                    <h5 className="font-semibold text-primary">{sec.name}</h5>
-                                    <span className="text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider" style={{ backgroundColor: `${getStatusColor(sec.status)}20`, color: getStatusColor(sec.status) }}>
+                                    <h5 className="font-black text-primary">{sec.name}</h5>
+                                    <span className="text-[10px] px-2 py-0.5 rounded uppercase font-black tracking-wider" style={{ backgroundColor: `${getStatusColor(sec.status)}20`, color: getStatusColor(sec.status) }}>
                                         {sec.status}
                                     </span>
                                 </div>
-                                <p className="text-sm text-secondary/90 leading-relaxed mb-4 pl-2">
+                                <p className="text-sm text-secondary leading-relaxed mb-4 pl-2 font-medium">
                                     {sec.diagnosis}
                                 </p>
                                 
                                 {sec.suggestions && sec.suggestions.length > 0 && (
                                     <div className="pl-2">
-                                        <div className="flex items-center gap-1.5 text-xs font-semibold text-primary-light/60 mb-2 uppercase"><ChevronRight size={12}/> 优化方案建议</div>
+                                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 mb-2 uppercase"><ChevronRight size={12}/> 优化方案建议</div>
                                         <ul className="flex-col gap-2">
                                             {sec.suggestions.map((sug, sidx) => (
-                                                <li key={sidx} className="text-[0.9rem] text-primary-light bg-white/5 rounded-md px-3 py-2 flex items-start gap-2">
-                                                    <span className="text-accent/60 mt-0.5">•</span> 
+                                                <li key={sidx} className="text-[0.9rem] text-primary bg-slate-50 rounded-md px-3 py-2 flex items-start gap-2 font-medium">
+                                                    <span className="text-accent/60 mt-0.5 font-bold">•</span> 
                                                     <span>{sug}</span>
                                                 </li>
                                             ))}

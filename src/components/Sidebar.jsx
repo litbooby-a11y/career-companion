@@ -1,12 +1,13 @@
 import React from 'react';
-import { LayoutDashboard, FileText, Mic, Target, Zap } from 'lucide-react';
+import { LayoutDashboard, FileText, Mic, Target, Zap, Radar } from 'lucide-react';
 
 const Sidebar = ({ currentPage, onNavigate }) => {
   const navItems = [
     { id: 'dashboard', label: '工作台', icon: <LayoutDashboard size={22} /> },
     { id: 'resume', label: '简历问诊室', icon: <FileText size={22} /> },
+    { id: 'assessor', label: '岗位雷达', icon: <Radar size={22} /> },
     { id: 'interview', label: '高压面试场', icon: <Mic size={22} /> },
-    { id: 'career', label: '成长路线', icon: <Target size={22} /> }
+    { id: 'career', label: '成长陪伴', icon: <Target size={22} /> }
   ];
 
   return (
@@ -14,8 +15,8 @@ const Sidebar = ({ currentPage, onNavigate }) => {
       {/* Desktop Sidebar */}
       <div className="glass-panel flex-col desktop-only" style={{ width: '280px', margin: '1.5rem', height: 'calc(100vh - 3rem)', padding: '2rem 1.5rem', borderRadius: 'var(--radius-xl)' }}>
         <div className="flex-row gap-3 mb-10" style={{ padding: '0 0.5rem' }}>
-          <div style={{ background: 'rgba(139, 92, 246, 0.15)', padding: '0.5rem', borderRadius: '12px', display: 'flex', alignItems: 'center' }}>
-            <Zap size={24} color="#a78bfa" />
+          <div style={{ background: 'var(--surface-color)', boxShadow: 'var(--shadow-sm)', padding: '0.5rem', borderRadius: '12px', display: 'flex', alignItems: 'center' }}>
+            <Zap size={24} color="var(--accent-primary)" />
           </div>
           <h2 style={{ margin: 0, fontSize: '1.4rem', letterSpacing: '-0.02em', fontFamily: 'var(--font-heading)' }} className="text-gradient">Career AI</h2>
         </div>
@@ -29,10 +30,10 @@ const Sidebar = ({ currentPage, onNavigate }) => {
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 style={{
-                  background: isActive ? 'rgba(139, 92, 246, 0.1)' : 'transparent',
+                  background: isActive ? 'rgba(255, 255, 255, 0.8)' : 'transparent',
                   border: '1px solid',
-                  borderColor: isActive ? 'rgba(139, 92, 246, 0.2)' : 'transparent',
-                  color: isActive ? '#fff' : 'var(--text-secondary)',
+                  borderColor: isActive ? 'var(--surface-border-highlight)' : 'transparent',
+                  color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
                   padding: '0.85rem 1rem',
                   borderRadius: 'var(--radius-md)',
                   display: 'flex',
@@ -41,11 +42,11 @@ const Sidebar = ({ currentPage, onNavigate }) => {
                   cursor: 'pointer',
                   transition: 'all var(--transition-normal)',
                   width: '100%',
-                  fontWeight: isActive ? '600' : '500',
+                  fontWeight: isActive ? '700' : '500',
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.95rem',
                   textAlign: 'left',
-                  boxShadow: isActive ? 'inset 0 0 12px rgba(139, 92, 246, 0.1)' : 'none'
+                  boxShadow: isActive ? 'var(--shadow-sm)' : 'none'
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
@@ -60,19 +61,19 @@ const Sidebar = ({ currentPage, onNavigate }) => {
                   }
                 }}
               >
-                <span style={{ color: isActive ? '#c4b5fd' : 'inherit', transition: 'color var(--transition-normal)' }}>{item.icon}</span>
+                <span style={{ color: isActive ? 'var(--accent-primary)' : 'inherit', transition: 'color var(--transition-normal)' }}>{item.icon}</span>
                 {item.label}
               </button>
             )
           })}
         </div>
 
-        <div style={{ padding: '1.25rem', background: 'rgba(0,0,0,0.3)', borderRadius: 'var(--radius-lg)', marginTop: 'auto', border: '1px solid var(--surface-border)' }}>
+        <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.6)', borderRadius: 'var(--radius-lg)', marginTop: 'auto', border: '1px solid var(--surface-border)' }}>
           <div className="flex-row gap-4 items-center">
-            <div style={{ minWidth: '40px', width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)', boxShadow: 'var(--glow-primary)', border: '2px solid rgba(255,255,255,0.1)' }}></div>
+            <div style={{ minWidth: '40px', width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #e2e8f0, #f8fafc)', boxShadow: 'var(--shadow-sm)', border: '2px solid rgba(255,255,255,0.8)' }}></div>
             <div className="flex-col">
-              <span style={{ fontWeight: 600, fontSize: '0.95rem', fontFamily: 'var(--font-heading)' }}>Alex PM</span>
-              <span style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem', fontWeight: 500 }}>Pro Plan Active</span>
+              <span style={{ fontWeight: 600, fontSize: '0.95rem', fontFamily: 'var(--font-heading)', color: 'var(--text-primary)' }}>Alex L.</span>
+              <span style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>Pro Plan Active</span>
             </div>
           </div>
         </div>
@@ -85,7 +86,7 @@ const Sidebar = ({ currentPage, onNavigate }) => {
         left: 0,
         right: 0,
         height: '75px',
-        background: 'rgba(5, 5, 8, 0.85)',
+        background: 'rgba(248, 250, 252, 0.85)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         borderTop: '1px solid var(--surface-border)',
@@ -105,7 +106,7 @@ const Sidebar = ({ currentPage, onNavigate }) => {
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: isActive ? 'var(--accent-primary-hover)' : 'var(--text-secondary)',
+                color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -128,15 +129,15 @@ const Sidebar = ({ currentPage, onNavigate }) => {
               }}>
                 <span style={{ 
                   color: 'inherit',
-                  filter: isActive ? 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.8))' : 'none' 
+                  filter: isActive ? 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.3))' : 'none' 
                 }}>
                   {item.icon}
                 </span>
               </div>
               <span style={{ 
-                fontSize: '0.7rem', 
-                fontWeight: isActive ? 600 : 500,
-                color: isActive ? 'var(--text-primary)' : 'inherit'
+                fontSize: '0.75rem', 
+                fontWeight: isActive ? 700 : 500,
+                color: isActive ? 'var(--accent-primary)' : 'inherit'
               }}>
                 {item.label}
               </span>

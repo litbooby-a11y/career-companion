@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Career Companion - Boss Zhipin Auto Fetcher",
+  "version": "1.0.0",
+  "description": "一键将 Boss 直聘岗位详情(JD)跨域直接发送至本地的 Career Companion 本地大盘系统，并触发自动化破冰。",
+  "permissions": [
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://www.zhipin.com/*",
+    "http://localhost:*/*",
+    "http://127.0.0.1:*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.zhipin.com/job_detail/*"
+      ],
+      "js": [
+        "content_boss.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

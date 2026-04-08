@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import ResumeDoctor from './pages/ResumeDoctor';
 import InterviewCoach from './pages/InterviewCoach';
 import CareerPath from './pages/CareerPath';
+import JobAssessor from './pages/JobAssessor';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -11,6 +12,7 @@ function App() {
   const renderPage = () => {
     switch(currentPage) {
       case 'dashboard': return <Dashboard onNavigate={setCurrentPage} />;
+      case 'assessor': return <JobAssessor />;
       case 'resume': return <ResumeDoctor />;
       case 'interview': return <InterviewCoach />;
       case 'career': return <CareerPath />;

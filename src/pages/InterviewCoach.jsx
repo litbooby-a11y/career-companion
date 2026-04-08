@@ -3,7 +3,7 @@ import { Send, User, Bot, AlertCircle, Mic, MicOff, Volume2, VolumeX } from 'luc
 import { fetchDeepSeekChat } from '../api';
 
 const SYSTEM_PROMPT = `
-你是一位顶级互联网大厂的高级业务总监（P9级别），现在正在面试一位【资深商业化产品经理】。
+你是一位顶级互联网大厂的高级业务总监（P9级别），现在正在面试一位【资深职场精英/核心业务骨干】。
 你的风格：极度冷酷、毒舌、压迫感极强、直击要害。
 
 面试者的每一个回答，你都要给出两部分内容（按格式合成字符串）：
@@ -22,7 +22,7 @@ const SYSTEM_PROMPT = `
 }
 `;
 
-const INITIAL_MSG = '你好！我是你的高压面试教练（高级业务总监级别）。今天面试的是【资深商业化产品经理】岗。请准备好接受压力测试。我们现在开始：\n\n**如果你们业务的 DAU 在周末突然下降了 10%，而你下周就要向 CEO 汇报，作为 PM，你会从哪几个维度排查并给出版案？**';
+const INITIAL_MSG = '你好！我是你的高压面试教练（高级业务总监级别）。今天面试的是【核心业务中坚力量】岗。请准备好接受压力测试。我们现在开始：\n\n**如果你们部门的核心业务指标（或营收）在三季度突然出现了 15% 的异常下滑，而你下周就要向 CEO 汇报，作为核心骨干，你会从哪几个维度排查并给出落地的抢救方案？**';
 
 const InterviewCoach = () => {
   const [messages, setMessages] = useState([
@@ -178,15 +178,15 @@ const InterviewCoach = () => {
 
   return (
     <div className="flex-row flex-col-mobile gap-6 h-full animate-fade-in" style={{ height: '100%' }}>
-      <div className="glass-panel flex-col w-full-mobile" style={{ flex: 2, display: 'flex', height: '100%', minWidth: '320px' }}>
-        <div style={{ padding: '2rem', borderBottom: '1px solid var(--surface-border)', background: 'rgba(255,255,255,0.01)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="glass-panel flex-col w-full-mobile shadow-sm" style={{ flex: 2, display: 'flex', height: '100%', minWidth: '320px', backgroundColor: 'rgba(255,255,255,0.7)' }}>
+        <div style={{ padding: '2rem', borderBottom: '1px solid var(--surface-border)', background: 'rgba(255,255,255,0.8)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTopLeftRadius: 'var(--radius-xl)', borderTopRightRadius: 'var(--radius-xl)' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem', margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.02em', fontFamily: 'var(--font-heading)' }}>高压模拟面试场</h2>
-            <p style={{ fontSize: '1rem', marginTop: '0.75rem', color: 'var(--text-secondary)' }}>目标岗位：<span className="badge badge-warning ml-2" style={{ padding: '0.4rem 0.8rem' }}>字节跳动 - 商业化高级产品经理</span></p>
+            <h2 style={{ fontSize: '1.75rem', margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.02em', fontFamily: 'var(--font-heading)', fontWeight: 800 }}>高压模拟面试场</h2>
+            <p style={{ fontSize: '1rem', marginTop: '0.75rem', color: 'var(--text-secondary)' }}>目标岗位：<span className="badge font-bold" style={{ padding: '0.4rem 0.8rem', background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' }}>一线大厂 - 核心业务线高级专家</span></p>
           </div>
           <button
-            className="btn-glass"
-            style={{ padding: '0.75rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            className="btn-glass bg-white hover:bg-slate-50 transition-colors shadow-sm"
+            style={{ padding: '0.75rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--surface-border)' }}
             onClick={() => {
               setIsMuted(!isMuted);
               if (!isMuted) window.speechSynthesis.cancel();
@@ -201,53 +201,55 @@ const InterviewCoach = () => {
           {messages.map((m, i) => (
             <div key={i} className={`flex-row gap-4 ${m.role === 'user' ? 'justify-end' : ''} animate-fade-in-up delay-100`} style={{ alignItems: 'flex-start' }}>
               {m.role === 'assistant' && (
-                <div style={{ padding: '0.75rem', background: 'rgba(139, 92, 246, 0.15)', borderRadius: '50%', border: '1px solid rgba(139, 92, 246, 0.3)', boxShadow: 'var(--glow-primary)', minWidth: '44px' }}><Bot size={24} color="#c4b5fd" /></div>
+                <div style={{ padding: '0.75rem', background: '#f3e8ff', borderRadius: '50%', border: '1px solid #e9d5ff', boxShadow: 'var(--shadow-sm)', minWidth: '44px' }}><Bot size={24} className="text-accent" /></div>
               )}
 
               <div style={{
-                background: m.role === 'user' ? 'linear-gradient(135deg, var(--accent-primary), #6d28d9)' : 'rgba(255,255,255,0.03)',
+                background: m.role === 'user' ? 'linear-gradient(135deg, var(--accent-primary), #6d28d9)' : '#ffffff',
                 padding: '1.25rem 1.5rem',
                 borderRadius: 'var(--radius-xl)',
                 borderBottomRightRadius: m.role === 'user' ? '4px' : 'var(--radius-xl)',
                 borderTopLeftRadius: m.role === 'assistant' ? '4px' : 'var(--radius-xl)',
                 maxWidth: '85%',
-                border: m.role === 'user' ? 'none' : '1px solid var(--surface-border)',
+                border: m.role === 'user' ? 'none' : '1px solid #e2e8f0',
                 whiteSpace: 'pre-wrap',
                 lineHeight: 1.6,
-                fontSize: '1rem',
-                boxShadow: m.role === 'user' ? '0 4px 14px rgba(139, 92, 246, 0.3)' : 'var(--shadow-sm)'
+                fontSize: '0.95rem',
+                color: m.role === 'user' ? '#ffffff' : 'var(--text-primary)',
+                fontWeight: m.role === 'user' ? '500' : '500',
+                boxShadow: m.role === 'user' ? '0 4px 14px rgba(139, 92, 246, 0.3)' : '0 2px 8px rgba(71, 85, 105, 0.03)'
               }}>
                 {m.score && (
-                  <div className="mb-3 flex-row justify-between" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                    <span style={{ color: '#f8fafc', fontWeight: 600, fontSize: '0.9rem', letterSpacing: '0.02em' }}>AI 严格打分</span>
-                    <span style={{ color: m.score < 70 ? '#ef4444' : '#10b981', fontWeight: 700, fontSize: '0.9rem' }}>{m.score} / 100 分</span>
+                  <div className="mb-3 flex-row justify-between" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+                    <span style={{ color: 'var(--text-secondary)', fontWeight: 700, fontSize: '0.85rem', letterSpacing: '0.02em', textTransform: 'uppercase' }}>AI 严格打分</span>
+                    <span style={{ color: m.score < 70 ? 'var(--error)' : 'var(--success)', fontWeight: 800, fontSize: '0.9rem' }}>{m.score} / 100 分</span>
                   </div>
                 )}
                 {m.text}
               </div>
 
               {m.role === 'user' && (
-                <div style={{ padding: '0.75rem', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '50%', border: '1px solid rgba(255, 255, 255, 0.2)', minWidth: '44px' }}><User size={24} color="#f8fafc" /></div>
+                <div style={{ padding: '0.75rem', background: 'var(--bg-base)', borderRadius: '50%', border: '1px solid var(--surface-border)', minWidth: '44px', boxShadow: 'var(--shadow-sm)' }}><User size={24} className="text-secondary" /></div>
               )}
             </div>
           ))}
           {isTyping && (
             <div className="flex-row gap-4 animate-fade-in">
-              <div style={{ padding: '0.75rem', background: 'rgba(139, 92, 246, 0.15)', borderRadius: '50%', border: '1px solid rgba(139, 92, 246, 0.3)', minWidth: '44px' }}><Bot className="animate-pulse-slow" size={24} color="#c4b5fd" /></div>
-              <div style={{ color: 'var(--text-secondary)', padding: '0.75rem', fontStyle: 'italic', fontSize: '0.95rem' }}>总监正在进行思考和碾压式推理...</div>
+              <div style={{ padding: '0.75rem', background: '#f3e8ff', borderRadius: '50%', border: '1px solid #e9d5ff', minWidth: '44px', boxShadow: 'var(--shadow-sm)' }}><Bot className="animate-pulse-slow text-accent" size={24} /></div>
+              <div style={{ color: 'var(--text-secondary)', padding: '0.75rem', fontStyle: 'italic', fontSize: '0.95rem', fontWeight: 500 }}>总监正在进行思考和碾压式推理...</div>
             </div>
           )}
           <div ref={endRef} />
         </div>
 
         {/* Input area fixed at the bottom of the left pane */}
-        <div style={{ padding: '1.5rem 2rem', borderTop: '1px solid var(--surface-border)', display: 'flex', gap: '1rem', background: 'rgba(0,0,0,0.4)', alignItems: 'center', marginTop: 'auto' }}>
+        <div style={{ padding: '1.5rem 2rem', borderTop: '1px solid var(--surface-border)', display: 'flex', gap: '1rem', background: 'rgba(255,255,255,0.9)', alignItems: 'center', marginTop: 'auto', borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)' }}>
           <button
-            className={`btn-glass ${isListening ? 'animate-pulse' : ''}`}
+            className={`btn-glass bg-white hover:bg-slate-50 transition-colors shadow-sm ${isListening ? 'animate-pulse' : ''}`}
             style={{
               height: '56px', width: '56px', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', flexShrink: 0,
-              background: isListening ? 'rgba(239, 68, 68, 0.15)' : '',
-              borderColor: isListening ? 'rgba(239, 68, 68, 0.3)' : ''
+              background: isListening ? '#fef2f2' : '',
+              borderColor: isListening ? '#fca5a5' : 'var(--surface-border)'
             }}
             onClick={toggleListening}
             title={isListening ? "停止识别" : "语音输入"}
@@ -255,14 +257,14 @@ const InterviewCoach = () => {
             {isListening ? <MicOff size={22} color="#ef4444" /> : <Mic size={22} color="var(--text-primary)" />}
           </button>
           <textarea
-            className="input-glass"
+            className="input-glass shadow-sm"
             placeholder={isListening ? "正在聆听中..." : "输入你的作答（支持多行作答，回车发送）"}
-            style={{ height: '56px', minHeight: '56px', flex: 1, resize: 'none', borderRadius: 'var(--radius-lg)', lineHeight: '1.5', paddingTop: '1rem' }}
+            style={{ height: '56px', minHeight: '56px', flex: 1, resize: 'none', borderRadius: 'var(--radius-lg)', lineHeight: '1.5', paddingTop: '1rem', background: '#ffffff' }}
             value={inputVal}
             onChange={e => setInputVal(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
           />
-          <button className="btn-primary" style={{ height: '56px', width: '56px', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)', flexShrink: 0 }} onClick={handleSend} disabled={isTyping} aria-label="发送">
+          <button className="btn-primary shadow-md hover:shadow-lg transition-all" style={{ height: '56px', width: '56px', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)', flexShrink: 0 }} onClick={handleSend} disabled={isTyping} aria-label="发送">
             <Send size={22} />
           </button>
         </div>
@@ -270,58 +272,58 @@ const InterviewCoach = () => {
 
       {/* Right Column (Radar & Guide) */}
       <div className="flex-col gap-6 w-full-mobile desktop-only" style={{ flex: 1, minWidth: '320px', overflowY: 'auto' }}>
-        <div className="glass-panel animate-fade-in-up delay-200" style={{ padding: '2rem' }}>
-          <h3 className="flex-row gap-2 mb-4" style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}><AlertCircle size={22} color="var(--warning)" /> 实战能力评估</h3>
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginBottom: '2rem' }}>根据你的回答，动态生成能力考核图档。</p>
+        <div className="glass-panel shadow-sm animate-fade-in-up delay-200" style={{ padding: '2rem', backgroundColor: 'rgba(255,255,255,0.85)' }}>
+          <h3 className="flex-row gap-2 mb-4 font-bold" style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}><AlertCircle size={22} className="text-warning" /> 实战能力评估</h3>
+          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginBottom: '2rem', fontWeight: 500 }}>根据你的回答，动态生成能力考核图档。</p>
 
           <div className="flex-col gap-5">
             <div>
               <div className="flex-row justify-between mb-2">
-                <span style={{ fontSize: '0.95rem', fontWeight: 500 }}>业务深度 & 数据Sense</span>
-                <span style={{ fontSize: '0.95rem', color: 'var(--accent-secondary)', fontWeight: 600 }}>{radarData.business_sense}/100</span>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>业务深度 & 数据Sense</span>
+                <span style={{ fontSize: '0.95rem', color: 'var(--accent-secondary)', fontWeight: 800 }}>{radarData.business_sense}/100</span>
               </div>
-              <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)' }}>
-                <div style={{ width: `${Math.max(5, radarData.business_sense)}%`, height: '100%', background: 'linear-gradient(90deg, #06b6d4, #3b82f6)', borderRadius: '4px', boxShadow: '0 0 10px rgba(6, 182, 212, 0.5)', transition: 'width 1s ease-out' }}></div>
-              </div>
-            </div>
-            <div>
-              <div className="flex-row justify-between mb-2">
-                <span style={{ fontSize: '0.95rem', fontWeight: 500 }}>逻辑闭环</span>
-                <span style={{ fontSize: '0.95rem', color: 'var(--accent-primary)', fontWeight: 600 }}>{radarData.logic}/100</span>
-              </div>
-              <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)' }}>
-                <div style={{ width: `${Math.max(5, radarData.logic)}%`, height: '100%', background: 'linear-gradient(90deg, #8b5cf6, #c084fc)', borderRadius: '4px', boxShadow: '0 0 10px rgba(139, 92, 246, 0.5)', transition: 'width 1s ease-out' }}></div>
+              <div style={{ width: '100%', height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${Math.max(5, radarData.business_sense)}%`, height: '100%', background: 'linear-gradient(90deg, #0ea5e9, #3b82f6)', borderRadius: '4px', boxShadow: '0 0 10px rgba(14, 165, 233, 0.3)', transition: 'width 1s ease-out' }}></div>
               </div>
             </div>
             <div>
               <div className="flex-row justify-between mb-2">
-                <span style={{ fontSize: '0.95rem', fontWeight: 500 }}>抗压与协作落地</span>
-                <span style={{ fontSize: '0.95rem', color: radarData.execution > 0 ? 'var(--success)' : 'var(--error)', fontWeight: 600 }}>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>逻辑闭环</span>
+                <span style={{ fontSize: '0.95rem', color: 'var(--accent-primary)', fontWeight: 800 }}>{radarData.logic}/100</span>
+              </div>
+              <div style={{ width: '100%', height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${Math.max(5, radarData.logic)}%`, height: '100%', background: 'linear-gradient(90deg, #8b5cf6, #c084fc)', borderRadius: '4px', boxShadow: '0 0 10px rgba(139, 92, 246, 0.3)', transition: 'width 1s ease-out' }}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex-row justify-between mb-2">
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>抗压与协作落地</span>
+                <span style={{ fontSize: '0.95rem', color: radarData.execution > 0 ? 'var(--success)' : 'var(--error)', fontWeight: 800 }}>
                   {radarData.execution > 0 ? `${radarData.execution}/100` : '待评估'}
                 </span>
               </div>
-              <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.2)' }}>
-                <div style={{ width: `${Math.max(5, radarData.execution)}%`, height: '100%', background: radarData.execution > 0 ? 'var(--success)' : 'var(--error)', transition: 'width 1s ease-out' }}></div>
+              <div style={{ width: '100%', height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${Math.max(5, radarData.execution)}%`, height: '100%', background: radarData.execution > 0 ? 'var(--success)' : 'var(--error)', borderRadius: '4px', transition: 'width 1s ease-out' }}></div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="glass-panel animate-fade-in-up delay-300" style={{ padding: '2rem', background: 'rgba(139, 92, 246, 0.03)', border: '1px solid rgba(139, 92, 246, 0.2)' }}>
-          <h3 className="mb-4 text-gradient" style={{ fontSize: '1.2rem' }}>💡 黄金回答结构范例</h3>
-          <div style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.8 }}>
+        <div className="glass-panel shadow-sm animate-fade-in-up delay-300" style={{ padding: '2rem', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+          <h3 className="mb-4 text-primary font-bold" style={{ fontSize: '1.2rem' }}>💡 黄金回答结构范例</h3>
+          <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: 1.8, fontWeight: 500 }}>
             遇到开放式问题，不要急于扔点子，必须遵循框架：<br /><br />
-            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '0.5rem' }}>
-              <span className="badge mb-2">1. 确认共识</span> <br />
-              先反问面试官条件或确认数据的准确性。
+            <div style={{ background: '#ffffff', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '0.5rem', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.02)' }}>
+              <span className="badge font-bold mb-2 inline-block" style={{ background: '#f1f5f9', color: '#475569', padding: '0.1rem 0.5rem', borderRadius: '4px' }}>1. 确认共识</span> <br />
+              <span className="text-secondary">先反问面试官条件或确认数据的准确性。</span>
             </div>
-            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '0.5rem' }}>
-              <span className="badge mb-2">2. 宏观漏斗拆解</span> <br />
-              外部环境 - 内部产研 - 业务运营。
+            <div style={{ background: '#ffffff', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '0.5rem', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.02)' }}>
+              <span className="badge font-bold mb-2 inline-block" style={{ background: '#f1f5f9', color: '#475569', padding: '0.1rem 0.5rem', borderRadius: '4px' }}>2. 宏观漏斗拆解</span> <br />
+              <span className="text-secondary">外部环境 - 内部产研 - 业务运营。</span>
             </div>
-            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
-              <span className="badge mb-2">3. 微观定点打击</span> <br />
-              具体 Action（附带时间节点与责任划分）。
+            <div style={{ background: '#ffffff', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.02)' }}>
+              <span className="badge font-bold mb-2 inline-block" style={{ background: '#f1f5f9', color: '#475569', padding: '0.1rem 0.5rem', borderRadius: '4px' }}>3. 微观定点打击</span> <br />
+              <span className="text-secondary">具体 Action（附带时间节点与责任划分）。</span>
             </div>
           </div>
         </div>
