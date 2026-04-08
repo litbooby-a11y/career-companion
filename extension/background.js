@@ -2,8 +2,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'JD_EXTRACTED') {
     const payload = request.payload;
 
-    // 查找本地是否有打开的 Career Companion
-    chrome.tabs.query({ url: "http://localhost:*/*" }, (tabs) => {
+    // 查找本地或线上生产环境是否有打开的 Career Companion
+    chrome.tabs.query({}, (tabs) => {
+      // 筛选出 localhost 或 vercel 生产环境的 tab
+      let targetTabs = tabs.filter(t => 
+        t.url && (t.url.includes("localhost:5173") || t.url.includes("career-companion-1.vercel.app"))
+      );
       
       const executeInjection = (tabId) => {
          chrome.scripting.executeScript({
@@ -19,21 +23,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
       };
 
-      if (tabs && tabs.length > 0) {
-        // 找到了本地开发服务器网页，唤醒并聚焦
-        let targetTab = tabs[0];
+      if (targetTabs && targetTabs.length > 0) {
+        // 找到了目标网页，唤醒并聚焦
+        let targetTab = targetTabs[0];
         chrome.tabs.update(targetTab.id, { active: true });
         chrome.windows.update(targetTab.windowId, { focused: true });
         
         executeInjection(targetTab.id);
 
       } else {
-        // 没有找到，新建一个页签引导用户
-        chrome.tabs.create({ url: "http://localhost:5173/" }, (newTab) => {
+        // 没有找到，优先使用线上生产环境地址新建一个页签引导用户
+        chrome.tabs.create({ url: "https://career-companion-1.vercel.app/" }, (newTab) => {
           // 等待页面及 React 加载完成
           setTimeout(() => {
              executeInjection(newTab.id);
-          }, 2500);
+          }, 3500); // 线上环境考虑网络延迟，增加到3.5秒
         });
       }
     });
